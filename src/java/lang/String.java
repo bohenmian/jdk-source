@@ -107,10 +107,12 @@ import java.util.regex.PatternSyntaxException;
  * @see     java.nio.charset.Charset
  * @since   JDK1.0
  */
-
+//String为什么不可变,因为String源码中声明了String方法为final,final代表修饰的方法不能被继承和改变
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage. */
+
+    //此处可以看出String底层的实现其实是转化为字符数组来处理
     private final char value[];
 
     /** Cache the hash code for the string */
@@ -134,6 +136,7 @@ public final class String
      * an empty character sequence.  Note that use of this constructor is
      * unnecessary since Strings are immutable.
      */
+    //无参构造方法中将字符数组第一个元素赋值给当前的value
     public String() {
         this.value = new char[0];
     }
@@ -162,6 +165,7 @@ public final class String
      * @param  value
      *         The initial value of the string
      */
+    //此处可以看出初始化String,是直接将String转化为char[]数组
     public String(char value[]) {
         this.value = Arrays.copyOf(value, value.length);
     }
@@ -188,6 +192,7 @@ public final class String
      *          characters outside the bounds of the {@code value} array
      */
     public String(char value[], int offset, int count) {
+        //抛出数组越界异常
         if (offset < 0) {
             throw new StringIndexOutOfBoundsException(offset);
         }
@@ -563,6 +568,8 @@ public final class String
      * @param  buffer
      *         A {@code StringBuffer}
      */
+    //StringBuffer底层实现对每个方法都加了synchronized,所以线程读写安全
+    //所以将StringBuffer转化为String的时候应该用synchronized修饰
     public String(StringBuffer buffer) {
         synchronized(buffer) {
             this.value = Arrays.copyOf(buffer.getValue(), buffer.length());
@@ -584,6 +591,7 @@ public final class String
      *
      * @since  1.5
      */
+    //StringBuilder为单线程版本,直接通过复制转化为String
     public String(StringBuilder builder) {
         this.value = Arrays.copyOf(builder.getValue(), builder.length());
     }
@@ -619,6 +627,7 @@ public final class String
      *
      * @since 1.6
      */
+    //如果String为空,那么直接将数组的length赋值为0
     public boolean isEmpty() {
         return value.length == 0;
     }
@@ -641,6 +650,7 @@ public final class String
      *             argument is negative or not less than the length of this
      *             string.
      */
+    //得到指定下标的元素
     public char charAt(int index) {
         if ((index < 0) || (index >= value.length)) {
             throw new StringIndexOutOfBoundsException(index);
@@ -964,8 +974,8 @@ public final class String
     public boolean equals(Object anObject) {
         if (this == anObject) {
             return true;
-        }
-        if (anObject instanceof String) {
+        }//判断比较对象的引用地址是否相等,相等则两个对象一定相等
+        if (anObject instanceof String) {//判断anObject是不是String的一个实例
             String anotherString = (String)anObject;
             int n = value.length;
             if (n == anotherString.value.length) {
@@ -973,6 +983,7 @@ public final class String
                 char v2[] = anotherString.value;
                 int i = 0;
                 while (n-- != 0) {
+                    //通过判断每个字符是否相等进而判断字符串是否相等
                     if (v1[i] != v2[i])
                         return false;
                     i++;
@@ -1146,6 +1157,7 @@ public final class String
 
         int k = 0;
         while (k < lim) {
+            //通过每个字符比较
             char c1 = v1[k];
             char c2 = v2[k];
             if (c1 != c2) {
@@ -1386,6 +1398,7 @@ public final class String
      *          this.substring(toffset).startsWith(prefix)
      *          </pre>
      */
+    //可以查找以某个前缀为开头的字符串
     public boolean startsWith(String prefix, int toffset) {
         char ta[] = value;
         int to = toffset;
@@ -1942,6 +1955,7 @@ public final class String
      *             {@code beginIndex} is larger than
      *             {@code endIndex}.
      */
+    //截取某一段字符串
     public String substring(int beginIndex, int endIndex) {
         if (beginIndex < 0) {
             throw new StringIndexOutOfBoundsException(beginIndex);
@@ -3149,5 +3163,7 @@ public final class String
      * @return  a string that has the same contents as this string, but is
      *          guaranteed to be from a pool of unique strings.
      */
+
+    //获取该实例在常亮池的引用
     public native String intern();
 }
