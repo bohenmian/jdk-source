@@ -160,6 +160,7 @@ import java.io.IOException;
  * @see     Hashtable
  * @since   1.4
  */
+//对HashMap的扩展,对HashMap中的元素变成有序的,底层实现为双向链表+HashMap,其中最主要的实现和HashMap相同,对HashMap的实现做了小的修改
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
@@ -190,6 +191,7 @@ public class LinkedHashMap<K,V>
      * HashMap.Node subclass for normal LinkedHashMap entries.
      */
     static class Entry<K,V> extends HashMap.Node<K,V> {
+        //before和after为双向链表中的前后指针
         Entry<K,V> before, after;
         Entry(int hash, K key, V value, Node<K,V> next) {
             super(hash, key, value, next);
@@ -201,11 +203,13 @@ public class LinkedHashMap<K,V>
     /**
      * The head (eldest) of the doubly linked list.
      */
+    //双向链表的头结点
     transient LinkedHashMap.Entry<K,V> head;
 
     /**
      * The tail (youngest) of the doubly linked list.
      */
+    //双向链表的尾结点
     transient LinkedHashMap.Entry<K,V> tail;
 
     /**
@@ -302,26 +306,36 @@ public class LinkedHashMap<K,V>
         }
     }
 
+    //LRU算法的具体实现
     void afterNodeAccess(Node<K,V> e) { // move node to last
         LinkedHashMap.Entry<K,V> last;
+        //accessOrder为true则启用了LRU规则,如果e对象不是尾节点(尾节点的话就不需要设置,此方法的作用就是把才访问的节点放入双向链表的尾部)
         if (accessOrder && (last = tail) != e) {
+            //用b,a节点分别记录e的前节点和后节点
             LinkedHashMap.Entry<K,V> p =
                 (LinkedHashMap.Entry<K,V>)e, b = p.before, a = p.after;
+            //释放当前节点
             p.after = null;
+            //如果当前节点的前节点为空,那么代表当前节点为头结点,断开后将该节点的后一个节点设置为头结点
             if (b == null)
                 head = a;
+            //不为头结点,那么将当前节点的前一个节点指向后一个节点
             else
                 b.after = a;
+            //如果当前节点不为尾节点,那么将当前这个节点的后一个节点指向它的前一个节点
             if (a != null)
                 a.before = b;
+            //如果当前节点为尾节点,那么当前节点断开后它的前一个节点即为尾节点
             else
                 last = b;
             if (last == null)
                 head = p;
             else {
+                //否则就把p放到双向队列最尾处
                 p.before = last;
                 last.after = p;
             }
+            //设置尾节点为p
             tail = p;
             ++modCount;
         }
@@ -439,7 +453,8 @@ public class LinkedHashMap<K,V>
         Node<K,V> e;
         if ((e = getNode(hash(key), key)) == null)
             return null;
-        if (accessOrder)
+        //此处为LinkedHashMap对HashMap的扩展
+        if (accessOrder)  //get方法判断accessOrder是否为true,即是否启用了LRU,如果启用了LRU算法,那么将该节点放入链表的尾部
             afterNodeAccess(e);
         return e.value;
     }
@@ -505,6 +520,7 @@ public class LinkedHashMap<K,V>
      * @return   <tt>true</tt> if the eldest entry should be removed
      *           from the map; <tt>false</tt> if it should be retained.
      */
+    //实现LRU算法的核心,需要重写removeEldestEntry()方法,自定义数据的淘汰机制
     protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
         return false;
     }

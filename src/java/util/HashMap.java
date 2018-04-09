@@ -679,6 +679,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                     p = e;
                 }
             }
+            //这段代码主要使用在LinkedHashMap,HashMap定义afterNodeAccess这个方法,但是为一个空方法,所以afterNodeAccess并没有实际作用
+            //LinkedHashMap重写了afterNodeAccess方法,所以LinkedHashMap在调用put方法的时候虽然是使用HashMap的put方法,但是因为重写了afterNodeAccess,
+            // 所以此处afterNodeAccess的效果是LinkedHashMap定义的规则(即多用于LRU)
             if (e != null) { // existing mapping for key
                 V oldValue = e.value;
                 if (!onlyIfAbsent || oldValue == null)
