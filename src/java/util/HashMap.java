@@ -663,9 +663,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             else if (p instanceof TreeNode)
                 e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
             else {
-                //如果是链表,遍历链表,如果遍历完链表没有相等则将该节点放入链表的尾端
+                //如果是链表,遍历链表
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
+                        //如果遍历完链表没有发现与该节点相等的节点，则将该节点放入链表的尾端
                         p.next = newNode(hash, key, value, null);
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
                             //如果插入节点后的节点数量大于8,那么直接转换为红黑树
@@ -698,6 +699,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         afterNodeInsertion(evict);
         return null;
     }
+
 
     /**
      * Initializes or doubles table size.  If null, allocates in

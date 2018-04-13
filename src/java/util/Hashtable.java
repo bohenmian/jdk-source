@@ -127,6 +127,7 @@ import java.util.function.BiFunction;
  * @see     TreeMap
  * @since JDK1.0
  */
+//遗留类
 public class Hashtable<K,V>
     extends Dictionary<K,V>
     implements Map<K,V>, Cloneable, java.io.Serializable {
@@ -456,12 +457,14 @@ public class Hashtable<K,V>
     public synchronized V put(K key, V value) {
         // Make sure the value is not null
         if (value == null) {
+            //不允许key为null,为null直接抛出异常
             throw new NullPointerException();
         }
 
         // Makes sure the key is not already in the hashtable.
         Entry<?,?> tab[] = table;
         int hash = key.hashCode();
+        //获得元素的数组下标
         int index = (hash & 0x7FFFFFFF) % tab.length;
         @SuppressWarnings("unchecked")
         Entry<K,V> entry = (Entry<K,V>)tab[index];
