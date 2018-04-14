@@ -111,6 +111,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Default initial capacity.
      */
+    //初始化容量为10
     private static final int DEFAULT_CAPACITY = 10;
 
     /**
@@ -131,6 +132,7 @@ public class ArrayList<E> extends AbstractList<E>
      *
      * @serial
      */
+    //数组已使用容量
     private int size;
 
     /**
@@ -140,6 +142,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws IllegalArgumentException if the specified initial capacity
      *         is negative
      */
+    //有初始容量的构造方法
     public ArrayList(int initialCapacity) {
         super();
         if (initialCapacity < 0)
@@ -151,6 +154,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Constructs an empty list with an initial capacity of ten.
      */
+    //默认的构造方法
     public ArrayList() {
         super();
         this.elementData = EMPTY_ELEMENTDATA;
@@ -234,10 +238,13 @@ public class ArrayList<E> extends AbstractList<E>
      *
      * @param minCapacity the desired minimum capacity
      */
+    //扩容操作
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
+        //扩容1.5倍
         int newCapacity = oldCapacity + (oldCapacity >> 1);
+        //扩容后容量仍然不够,直接使用minCapacity
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
@@ -292,6 +299,7 @@ public class ArrayList<E> extends AbstractList<E>
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
      */
+    //得到元素在数组中的下标
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
@@ -312,6 +320,7 @@ public class ArrayList<E> extends AbstractList<E>
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
      */
+    //从后往前遍历查找
     public int lastIndexOf(Object o) {
         if (o == null) {
             for (int i = size-1; i >= 0; i--)
@@ -333,7 +342,9 @@ public class ArrayList<E> extends AbstractList<E>
      */
     public Object clone() {
         try {
+            //浅复制,深复制用序列化和反序列化的方式
             ArrayList<?> v = (ArrayList<?>) super.clone();
+            //clone是通过底层的Arrays工具类的copyOf方法实现
             v.elementData = Arrays.copyOf(elementData, size);
             v.modCount = 0;
             return v;
@@ -440,6 +451,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
+        //add方法在多线程下是不安全的,如果要用线程安全的数组,用copyOnWriteArrayList
         ensureCapacityInternal(size + 1);  // Increments modCount!!
         elementData[size++] = e;
         return true;
@@ -561,6 +573,7 @@ public class ArrayList<E> extends AbstractList<E>
     public boolean addAll(Collection<? extends E> c) {
         Object[] a = c.toArray();
         int numNew = a.length;
+        //首先判断容量是否足够
         ensureCapacityInternal(size + numNew);  // Increments modCount
         System.arraycopy(a, 0, elementData, size, numNew);
         size += numNew;
