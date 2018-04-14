@@ -1,4 +1,4 @@
-package src.com.jdk.test.lang;
+package src.com.jdk.test.util.concurrent;
 
 /**
  * Thread/Callable模型

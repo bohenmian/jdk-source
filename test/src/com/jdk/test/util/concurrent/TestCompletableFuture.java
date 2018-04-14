@@ -1,4 +1,4 @@
-package src.com.jdk.test.lang;
+package src.com.jdk.test.util.concurrent;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

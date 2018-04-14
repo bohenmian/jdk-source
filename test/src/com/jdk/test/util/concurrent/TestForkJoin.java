@@ -1,4 +1,4 @@
-package src.com.jdk.test.lang;
+package src.com.jdk.test.util.concurrent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,6 @@ public class TestForkJoin {
         forkJoinPool.shutdown();
 
         System.out.println(longAdder);
-
     }
 
     private static class AddTask extends RecursiveAction {
