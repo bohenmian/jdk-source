@@ -94,6 +94,8 @@ import java.util.Arrays;
  * @see     java.lang.String
  * @since   JDK1.0
  */
+
+//String的多线程版本,用synchronized保证了线程安全
  public final class StringBuffer
     extends AbstractStringBuilder
     implements java.io.Serializable, CharSequence
@@ -172,7 +174,7 @@ import java.util.Arrays;
     @Override
     public synchronized void ensureCapacity(int minimumCapacity) {
         if (minimumCapacity > value.length) {
-            expandCapacity(minimumCapacity);
+//            expandCapacity(minimumCapacity);
         }
     }
 
