@@ -80,6 +80,7 @@ import java.util.function.UnaryOperator;
  * @see LinkedList
  * @since   JDK1.0
  */
+//线程安全的数组,底层实现采用synchronized加锁来保证线程的安全性,但是synchronized的性能较低,高并发条件下建议采用CopyOnWriteArrayList
 public class Vector<E>
     extends AbstractList<E>
     implements List<E>, RandomAccess, Cloneable, java.io.Serializable
@@ -153,6 +154,7 @@ public class Vector<E>
      * has size {@code 10} and its standard capacity increment is
      * zero.
      */
+    //初始默认容量为10
     public Vector() {
         this(10);
     }
@@ -254,6 +256,7 @@ public class Vector<E>
      */
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
+    //扩容容量的判断和扩容的容量确定
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
@@ -398,6 +401,7 @@ public class Vector<E>
      * @throws IndexOutOfBoundsException if the specified index is negative
      * @see     Object#equals(Object)
      */
+    //和ArrayList类似,底层实现为数组,通过遍历数组获得元素的下标
     public synchronized int indexOf(Object o, int index) {
         if (o == null) {
             for (int i = index ; i < elementCount ; i++)
@@ -592,13 +596,16 @@ public class Vector<E>
      * @throws ArrayIndexOutOfBoundsException if the index is out of range
      *         ({@code index < 0 || index > size()})
      */
+    //在指定位置插入一个元素,ArrayList和Vector底层实现为数组,插入和删除的时间复杂度均为O(n)
     public synchronized void insertElementAt(E obj, int index) {
         modCount++;
         if (index > elementCount) {
             throw new ArrayIndexOutOfBoundsException(index
                                                      + " > " + elementCount);
         }
+        //确保数组容量足够插入一个元素
         ensureCapacityHelper(elementCount + 1);
+        //复制数组
         System.arraycopy(elementData, index, elementData, index + 1, elementCount - index);
         elementData[index] = obj;
         elementCount++;
