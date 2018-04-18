@@ -73,6 +73,7 @@ package java.lang;
  * @see         java.lang.String
  * @since       1.5
  */
+//String的单线程版本,String的+(连接符号)是通过转化为StringBuilder来实现的
 public final class StringBuilder
     extends AbstractStringBuilder
     implements java.io.Serializable, CharSequence

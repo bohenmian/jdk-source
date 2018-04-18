@@ -88,14 +88,19 @@ import java.util.function.UnaryOperator;
  * @author Doug Lea
  * @param <E> the type of elements held in this collection
  */
+//ArrayList的线程安全类,建议在高并发条件下使用CopyOnWriteArrayList而不是Vector
+//CopyOnWriteArrayList中是对写加锁而读不加锁,所以CopyOnWriteArrayList适用与读多写少的场景
+//因为CopyOnWriteArrayList是基于复制,所以CopyOnWriteArrayList可能耗费内存比较大,同时CopyOnWriteArrayList只保证最终一致性,不保证强一致性.数据同步时效较低
 public class CopyOnWriteArrayList<E>
     implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = 8673264195747942595L;
 
     /** The lock protecting all mutators */
+    //引入Lock,保证容器写的时候的安全性
     final transient ReentrantLock lock = new ReentrantLock();
 
     /** The array, accessed only via getArray/setArray. */
+    //保证数组的可见性
     private transient volatile Object[] array;
 
     /**
@@ -383,6 +388,7 @@ public class CopyOnWriteArrayList<E>
     // Positional Access Operations
 
     @SuppressWarnings("unchecked")
+    //读不加锁
     private E get(Object[] a, int index) {
         return (E) a[index];
     }
@@ -402,6 +408,7 @@ public class CopyOnWriteArrayList<E>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    //写加锁
     public E set(int index, E element) {
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -430,14 +437,22 @@ public class CopyOnWriteArrayList<E>
      * @param e element to be appended to this list
      * @return {@code true} (as specified by {@link Collection#add})
      */
+    //写加锁
     public boolean add(E e) {
+        //声明一个锁
         final ReentrantLock lock = this.lock;
+        //进入同步代码块,加锁
         lock.lock();
         try {
+            //根据当前容器中的数组复制一个新的数组
             Object[] elements = getArray();
+            //获得当前数组的大小
             int len = elements.length;
+            //申明一个新的数组,即插入后数组的大小
             Object[] newElements = Arrays.copyOf(elements, len + 1);
+            //在新数组中插入元素
             newElements[len] = e;
+            //将原容器的引用指向新的数组
             setArray(newElements);
             return true;
         } finally {

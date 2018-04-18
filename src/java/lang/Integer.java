@@ -777,6 +777,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * sun.misc.VM class.
      */
 
+    //IntegerCache判断如果数据在-128~127之间,那么会在常量池声明一份它的Cache
     private static class IntegerCache {
         static final int low = -128;
         static final int high;
