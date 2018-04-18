@@ -21,19 +21,19 @@ public class TestConcurrentHashMap {
 
     private static void putMap(Map<Integer, Integer> map) {
         long begin = System.currentTimeMillis();
-//        for (int k = 0; k < 100; k++) {      //循环100次,效果更明显
+        for (int k = 0; k < 100; k++) {      //循环100次,效果更明显
             for (int i = 0; i < 1000; i++) { //开1000个线程
                 final int key = i;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        for (int j = 0; j < 100000; j++) {
+                        for (int j = 0; j < 1000; j++) {
                             map.put(key, key);        //每个线程向map添加1000个数
                         }
                     }
                 }).start();
             }
-//        }
+        }
 
         long end = System.currentTimeMillis();
         System.out.println(end - begin);
