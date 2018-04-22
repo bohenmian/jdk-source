@@ -55,6 +55,7 @@ package java.util.concurrent;
  * @since 1.5
  * @author Doug Lea
  */
+//Thread的工厂,工厂模式的体现
 public interface ThreadFactory {
 
     /**
