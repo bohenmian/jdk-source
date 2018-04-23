@@ -153,6 +153,7 @@ public interface ExecutorService extends Executor {
      *         or the security manager's {@code checkAccess} method
      *         denies access.
      */
+    //关闭线程池
     void shutdown();
 
     /**
@@ -178,6 +179,7 @@ public interface ExecutorService extends Executor {
      *         or the security manager's {@code checkAccess} method
      *         denies access.
      */
+    //关闭线程池,停止当前正在执行的任务
     List<Runnable> shutdownNow();
 
     /**
@@ -185,6 +187,7 @@ public interface ExecutorService extends Executor {
      *
      * @return {@code true} if this executor has been shut down
      */
+    //判断线程池是否关闭
     boolean isShutdown();
 
     /**
@@ -194,6 +197,7 @@ public interface ExecutorService extends Executor {
      *
      * @return {@code true} if all tasks have completed following shut down
      */
+    //必须在调用shutdown或shutdownNow方法之后才会返回true
     boolean isTerminated();
 
     /**
@@ -233,6 +237,7 @@ public interface ExecutorService extends Executor {
      *         scheduled for execution
      * @throws NullPointerException if the task is null
      */
+    //提交一个Callable任务,有返回值
     <T> Future<T> submit(Callable<T> task);
 
     /**
@@ -284,6 +289,7 @@ public interface ExecutorService extends Executor {
      * @throws RejectedExecutionException if any task cannot be
      *         scheduled for execution
      */
+    //执行所有任务,返回一个Future类型的List
     <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
         throws InterruptedException;
 

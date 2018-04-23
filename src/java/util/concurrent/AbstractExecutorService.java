@@ -117,6 +117,7 @@ public abstract class AbstractExecutorService implements ExecutorService {
      * @throws RejectedExecutionException {@inheritDoc}
      * @throws NullPointerException       {@inheritDoc}
      */
+    //submit的执行是将任务包装成FutureTask,将包装后的任务交给execute执行,用Future获取返回值
     public <T> Future<T> submit(Runnable task, T result) {
         if (task == null) throw new NullPointerException();
         RunnableFuture<T> ftask = newTaskFor(task, result);
@@ -138,6 +139,7 @@ public abstract class AbstractExecutorService implements ExecutorService {
     /**
      * the main mechanics of invokeAny.
      */
+    //将tasks集合中的任务提交到线程池执行,任何一个线程执行完就可以结束了
     private <T> T doInvokeAny(Collection<? extends Callable<T>> tasks,
                               boolean timed, long nanos)
         throws InterruptedException, ExecutionException, TimeoutException {
