@@ -113,6 +113,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * into fair and nonfair versions below. Uses AQS state to
      * represent the number of holds on the lock.
      */
+    //主要实现,AQS是并发的基础
     abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = -5179523762034025860L;
 
@@ -126,16 +127,23 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * Performs non-fair tryLock.  tryAcquire is implemented in
          * subclasses, but both need nonfair try for trylock method.
          */
+        //非公平的方式获取锁
         final boolean nonfairTryAcquire(int acquires) {
+            //获取当前线程
             final Thread current = Thread.currentThread();
+            //获取线程的状态
             int c = getState();
+            //锁没有被任何线程所持有
             if (c == 0) {
+                //与公平获取的方式的区别在于是否判断阻塞队列中是否有等待的线程
                 if (compareAndSetState(0, acquires)) {
                     setExclusiveOwnerThread(current);
                     return true;
                 }
             }
+            //持有锁的线程就是当前线程
             else if (current == getExclusiveOwnerThread()) {
+                //加入可重入次数
                 int nextc = c + acquires;
                 if (nextc < 0) // overflow
                     throw new Error("Maximum lock count exceeded");
@@ -220,7 +228,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     static final class FairSync extends Sync {
         private static final long serialVersionUID = -3000897897090466540L;
 
+        //lock方法的入口
         final void lock() {
+            //转到AQS中实现
             acquire(1);
         }
 
@@ -229,19 +239,27 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * recursive call or no waiters or is first.
          */
         protected final boolean tryAcquire(int acquires) {
+            //获取当前线程
             final Thread current = Thread.currentThread();
+            //获取锁的状态
             int c = getState();
+            //如果锁的状态为0(代表当前没有线程持有锁)
             if (c == 0) {
+                //因为是基于公平锁实现,所以要判断阻塞队列中是否还有线程,如果没有尝试用CAS操作持有锁
                 if (!hasQueuedPredecessors() &&
                     compareAndSetState(0, acquires)) {
+                    //将锁设置为当前线程独占
                     setExclusiveOwnerThread(current);
                     return true;
                 }
             }
+            //如果持有锁的线程就是当前线程
             else if (current == getExclusiveOwnerThread()) {
+                //那么加入锁的重入次数
                 int nextc = c + acquires;
                 if (nextc < 0)
                     throw new Error("Maximum lock count exceeded");
+                //重新修改加锁的次数
                 setState(nextc);
                 return true;
             }
@@ -331,6 +349,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *
      * @throws InterruptedException if the current thread is interrupted
      */
+    //可以中断的获取锁
     public void lockInterruptibly() throws InterruptedException {
         sync.acquireInterruptibly(1);
     }
@@ -437,6 +456,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws InterruptedException if the current thread is interrupted
      * @throws NullPointerException if the time unit is null
      */
+    //可以超时的获取锁
     public boolean tryLock(long timeout, TimeUnit unit)
             throws InterruptedException {
         return sync.tryAcquireNanos(1, unit.toNanos(timeout));
