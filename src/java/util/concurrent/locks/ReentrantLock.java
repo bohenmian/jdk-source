@@ -516,6 +516,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *
      * @return the Condition object
      */
+    //AQS中的条件队列
     public Condition newCondition() {
         return sync.newCondition();
     }
@@ -682,7 +683,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     /**
      * Returns a collection containing threads that may be waiting to
      * acquire this lock.  Because the actual set of threads may change
-     * dynamically while constructing this result, the returned
+     * dynamically while constructing this result, the returnedfuw
      * collection is only a best-effort estimate.  The elements of the
      * returned collection are in no particular order.  This method is
      * designed to facilitate construction of subclasses that provide
@@ -709,6 +710,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *         not associated with this lock
      * @throws NullPointerException if the condition is null
      */
+    //判断条件队列中是否还有其他的等待节点
     public boolean hasWaiters(Condition condition) {
         if (condition == null)
             throw new NullPointerException();

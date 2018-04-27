@@ -212,12 +212,15 @@ import java.util.Collection;
  * @since 1.5
  * @author Doug Lea
  */
+//ReentrantReadWriteLock中维护了一个读锁和一个写锁,实现读为共享锁,可以多个线程同时读,写为排他锁,写的时候只能一个线程操作
 public class ReentrantReadWriteLock
         implements ReadWriteLock, java.io.Serializable {
     private static final long serialVersionUID = -6992448646407690164L;
+    //读锁
     /** Inner class providing readlock */
     private final ReentrantReadWriteLock.ReadLock readerLock;
     /** Inner class providing writelock */
+    //写锁
     private final ReentrantReadWriteLock.WriteLock writerLock;
     /** Performs all synchronization mechanics */
     final Sync sync;
@@ -237,6 +240,7 @@ public class ReentrantReadWriteLock
      * @param fair {@code true} if this lock should use a fair ordering policy
      */
     public ReentrantReadWriteLock(boolean fair) {
+        //判断是公平获取锁还是非公平获取锁
         sync = fair ? new FairSync() : new NonfairSync();
         readerLock = new ReadLock(this);
         writerLock = new WriteLock(this);
@@ -259,14 +263,17 @@ public class ReentrantReadWriteLock
          * and the upper the shared (reader) hold count.
          */
 
+        //将state分为两部分,高16位用于共享模式,低16位用于独占模式
         static final int SHARED_SHIFT   = 16;
         static final int SHARED_UNIT    = (1 << SHARED_SHIFT);
         static final int MAX_COUNT      = (1 << SHARED_SHIFT) - 1;
         static final int EXCLUSIVE_MASK = (1 << SHARED_SHIFT) - 1;
 
         /** Returns the number of shared holds represented in count  */
+        //取c的高16位值,代表读锁的重入次数
         static int sharedCount(int c)    { return c >>> SHARED_SHIFT; }
         /** Returns the number of exclusive holds represented in count  */
+        //取c的低16位值,代表写锁的重入次数
         static int exclusiveCount(int c) { return c & EXCLUSIVE_MASK; }
 
         /**
@@ -461,22 +468,27 @@ public class ReentrantReadWriteLock
              *    apparently not eligible or CAS fails or count
              *    saturated, chain to version with full retry loop.
              */
+            //获取当前的线程
             Thread current = Thread.currentThread();
+            //获取锁的状态
             int c = getState();
+            //判断是否有线程持有写锁,如果被占用判断是否是当前线程所占用
             if (exclusiveCount(c) != 0 &&
                 getExclusiveOwnerThread() != current)
                 return -1;
+            //获取读锁的次数
             int r = sharedCount(c);
+            //读锁获取是否需要被阻塞
             if (!readerShouldBlock() &&
-                r < MAX_COUNT &&
-                compareAndSetState(c, c + SHARED_UNIT)) {
-                if (r == 0) {
-                    firstReader = current;
+                r < MAX_COUNT &&  //判断是否越界
+                compareAndSetState(c, c + SHARED_UNIT)) { //用CAS操作将高16位加1
+                if (r == 0) { //说明此线程是第一个获取到读锁的线程
+                    firstReader = current;  //记录firstReader为当前线程
                     firstReaderHoldCount = 1;
                 } else if (firstReader == current) {
                     firstReaderHoldCount++;
                 } else {
-                    HoldCounter rh = cachedHoldCounter;
+                    HoldCounter rh = cachedHoldCounter;  //cachedHoldCounter用于缓存最后一个获取读锁的线程
                     if (rh == null || rh.tid != getThreadId(current))
                         cachedHoldCounter = rh = readHolds.get();
                     else if (rh.count == 0)
@@ -709,6 +721,7 @@ public class ReentrantReadWriteLock
          * @param lock the outer lock object
          * @throws NullPointerException if the lock is null
          */
+        //读锁
         protected ReadLock(ReentrantReadWriteLock lock) {
             sync = lock.sync;
         }
@@ -723,6 +736,7 @@ public class ReentrantReadWriteLock
          * the current thread becomes disabled for thread scheduling
          * purposes and lies dormant until the read lock has been acquired.
          */
+        //尝试共享的获取锁(读锁为共享锁)
         public void lock() {
             sync.acquireShared(1);
         }
@@ -768,6 +782,7 @@ public class ReentrantReadWriteLock
          *
          * @throws InterruptedException if the current thread is interrupted
          */
+        //尝试可中断的获取锁
         public void lockInterruptibly() throws InterruptedException {
             sync.acquireSharedInterruptibly(1);
         }
@@ -866,6 +881,7 @@ public class ReentrantReadWriteLock
          * @throws InterruptedException if the current thread is interrupted
          * @throws NullPointerException if the time unit is null
          */
+        //尝试超时的获取锁
         public boolean tryLock(long timeout, TimeUnit unit)
                 throws InterruptedException {
             return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
@@ -908,6 +924,7 @@ public class ReentrantReadWriteLock
     /**
      * The lock returned by method {@link ReentrantReadWriteLock#writeLock}.
      */
+    //写锁
     public static class WriteLock implements Lock, java.io.Serializable {
         private static final long serialVersionUID = -4992448646407690164L;
         private final Sync sync;
@@ -939,6 +956,7 @@ public class ReentrantReadWriteLock
          * lies dormant until the write lock has been acquired, at which
          * time the write lock hold count is set to one.
          */
+        //写锁为排他锁,所以不能共享的获取锁
         public void lock() {
             sync.acquire(1);
         }
@@ -994,6 +1012,7 @@ public class ReentrantReadWriteLock
          *
          * @throws InterruptedException if the current thread is interrupted
          */
+        //可中断的获取锁
         public void lockInterruptibly() throws InterruptedException {
             sync.acquireInterruptibly(1);
         }

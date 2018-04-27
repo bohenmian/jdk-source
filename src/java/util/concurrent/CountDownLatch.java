@@ -153,6 +153,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @since 1.5
  * @author Doug Lea
  */
+//可用于让一个线程等待其他线程执行完毕再执行,和CyclicBarrier相似,但是CountDownLatch是减计数方式,CyclicBarrier是加计数方式,且可以重用
 public class CountDownLatch {
     /**
      * Synchronization control For CountDownLatch.

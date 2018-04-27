@@ -136,6 +136,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Doug Lea
  */
+//栅栏,可用于控制所以线程到达才能进行下一段操作
 public class CyclicBarrier {
     /**
      * Each use of the barrier is represented as a generation instance.
@@ -195,6 +196,7 @@ public class CyclicBarrier {
     /**
      * Main barrier code, covering the various policies.
      */
+    //主要实现方法
     private int dowait(boolean timed, long nanos)
         throws InterruptedException, BrokenBarrierException,
                TimeoutException {
@@ -202,7 +204,7 @@ public class CyclicBarrier {
         lock.lock();
         try {
             final Generation g = generation;
-
+            //检查栅栏是否被打破
             if (g.broken)
                 throw new BrokenBarrierException();
 
@@ -210,7 +212,7 @@ public class CyclicBarrier {
                 breakBarrier();
                 throw new InterruptedException();
             }
-
+            //index是count递减后得到的值,如果等于0,则代表所有线程都到达了,注意CyclicBarrier是加计数方式
             int index = --count;
             if (index == 0) {  // tripped
                 boolean ranAction = false;
@@ -218,10 +220,13 @@ public class CyclicBarrier {
                     final Runnable command = barrierCommand;
                     if (command != null)
                         command.run();
+                    //如果ranAction为true,说明没有发生异常情况而退出
                     ranAction = true;
+                    //唤醒新的一代,因为Generation的存在,所以栅栏是可以重复使用的
                     nextGeneration();
                     return 0;
                 } finally {
+                    //如果发生了异常,那么需要打破栅栏
                     if (!ranAction)
                         breakBarrier();
                 }
@@ -230,6 +235,7 @@ public class CyclicBarrier {
             // loop until tripped, broken, interrupted, or timed out
             for (;;) {
                 try {
+                    //如果使用了超时机制,那么调用Condition的 await方法等待
                     if (!timed)
                         trip.await();
                     else if (nanos > 0L)
@@ -239,6 +245,7 @@ public class CyclicBarrier {
                         breakBarrier();
                         throw ie;
                     } else {
+                        //g != null说明新的一代已经产生
                         // We're about to finish waiting even if we had not
                         // been interrupted, so this interrupt is deemed to
                         // "belong" to subsequent execution.
@@ -246,6 +253,7 @@ public class CyclicBarrier {
                     }
                 }
 
+                //检查栅栏是否是破的
                 if (g.broken)
                     throw new BrokenBarrierException();
 

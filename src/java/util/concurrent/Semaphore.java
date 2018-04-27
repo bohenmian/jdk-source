@@ -153,6 +153,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @since 1.5
  * @author Doug Lea
  */
+//信号量,可用于控制访问特定资源的线程数
 public class Semaphore implements java.io.Serializable {
     private static final long serialVersionUID = -3222578661600680210L;
     /** All mechanics via AbstractQueuedSynchronizer subclass */
@@ -163,6 +164,7 @@ public class Semaphore implements java.io.Serializable {
      * to represent permits. Subclassed into fair and nonfair
      * versions.
      */
+    //用AbstractQueuedSynchronizer来保证
     abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = 1192457210091910933L;
 
@@ -240,12 +242,16 @@ public class Semaphore implements java.io.Serializable {
             super(permits);
         }
 
+        //获取信号量
         protected int tryAcquireShared(int acquires) {
             for (;;) {
+                //判断该线程前是否还有线程正在等待获取锁
                 if (hasQueuedPredecessors())
                     return -1;
+                //获取可用的信号量
                 int available = getState();
                 int remaining = available - acquires;
+                //如果remaining小于0,则代表信号不足够给线程使用
                 if (remaining < 0 ||
                     compareAndSetState(available, remaining))
                     return remaining;
@@ -308,6 +314,7 @@ public class Semaphore implements java.io.Serializable {
      *
      * @throws InterruptedException if the current thread is interrupted
      */
+    //获取信号量的方法入口,可以中断
     public void acquire() throws InterruptedException {
         sync.acquireSharedInterruptibly(1);
     }
