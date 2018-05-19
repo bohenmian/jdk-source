@@ -1243,7 +1243,7 @@ public abstract class AbstractQueuedSynchronizer
      *            {@link #tryAcquire} but is otherwise uninterpreted and
      *            can represent anything you like.
      */
-    //ReentrantLock的实现类,只要分三步:1.尝试获取锁 2.入队 3.挂起
+    //ReentrantLock的实现类,主要分三步:1.尝试获取锁 2.入队 3.挂起
     public final void acquire(int arg) {
         //1.尝试获取锁tryAcquire:在ReentrantLock中实现
         //2.入队,addWaiter在AQS中实现
@@ -1694,7 +1694,7 @@ public abstract class AbstractQueuedSynchronizer
         //同理,node前驱节点不为null才应该在阻塞队列中
         if (node.waitStatus == Node.CONDITION || node.prev == null)
             return false;
-        //node的后继节点不为null,则代表已经在阻塞队列中了
+        //node的后继节点(next)不为null,则代表已经在阻塞队列中了
         if (node.next != null) // If has successor, it must be on queue
             return true;
         /*
