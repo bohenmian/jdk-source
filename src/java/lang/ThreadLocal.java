@@ -71,6 +71,7 @@ import java.util.function.Supplier;
  * @author  Josh Bloch and Doug Lea
  * @since   1.2
  */
+//线程本地变量,是通过每个线程都持有变量的一个副本来解决变量共享问题,ThreadLocal是一个K,V的结构,K为当前线程,V为变量的一个副本.
 public class ThreadLocal<T> {
     /**
      * ThreadLocals rely on per-thread linear-probe hash maps attached
@@ -123,6 +124,7 @@ public class ThreadLocal<T> {
      *
      * @return the initial value for this thread-local
      */
+    //初始化函数
     protected T initialValue() {
         return null;
     }
@@ -157,9 +159,12 @@ public class ThreadLocal<T> {
      * @return the current thread's value of this thread-local
      */
     public T get() {
+        //获取当前线程
         Thread t = Thread.currentThread();
+        //获取当前线程的map
         ThreadLocalMap map = getMap(t);
         if (map != null) {
+            //获取当前线程变量的副本的值
             ThreadLocalMap.Entry e = map.getEntry(this);
             if (e != null) {
                 @SuppressWarnings("unchecked")
@@ -167,6 +172,7 @@ public class ThreadLocal<T> {
                 return result;
             }
         }
+        //初始化该值
         return setInitialValue();
     }
 
@@ -176,12 +182,15 @@ public class ThreadLocal<T> {
      *
      * @return the initial value
      */
+    //设置初始值,不用考虑线程安全问题,因为每个线程都有一个独立的ThreadLocalMap,线程之间相互不影响
     private T setInitialValue() {
         T value = initialValue();
         Thread t = Thread.currentThread();
         ThreadLocalMap map = getMap(t);
+        //map存在则直接覆盖
         if (map != null)
             map.set(this, value);
+        //map不存在则创建一个map
         else
             createMap(t, value);
         return value;
@@ -295,6 +304,7 @@ public class ThreadLocal<T> {
      * used, stale entries are guaranteed to be removed only when
      * the table starts running out of space.
      */
+    //ThreadLocal的实现,KV
     static class ThreadLocalMap {
 
         /**
@@ -310,7 +320,8 @@ public class ThreadLocal<T> {
             Object value;
 
             Entry(ThreadLocal<?> k, Object v) {
-                super(k);
+                //ThreadLocalMap的K是一个弱引用对象
+                super(k);   //WeakReference
                 value = v;
             }
         }
@@ -471,7 +482,7 @@ public class ThreadLocal<T> {
                     e.value = value;
                     return;
                 }
-
+                //当ThreadLocalMap的键为null时,为了避免发生内存泄露,将键为null的对象的值也设为null使得可以被回收
                 if (k == null) {
                     replaceStaleEntry(key, value, i);
                     return;
