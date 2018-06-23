@@ -225,6 +225,7 @@ import sun.security.util.SecurityConstants;
  * @see         InvocationHandler
  * @since       1.3
  */
+//JDK动态代理的实现类
 public class Proxy implements java.io.Serializable {
 
     private static final long serialVersionUID = -2222568056686623797L;
@@ -553,6 +554,7 @@ public class Proxy implements java.io.Serializable {
      * A factory function that generates, defines and returns the proxy class given
      * the ClassLoader and array of interfaces.
      */
+    //代理类生成工厂(工厂方法)
     private static final class ProxyClassFactory
         implements BiFunction<ClassLoader, Class<?>[], Class<?>>
     {
@@ -573,9 +575,11 @@ public class Proxy implements java.io.Serializable {
                  */
                 Class<?> interfaceClass = null;
                 try {
+                    //通过反射获得interface
                     interfaceClass = Class.forName(intf.getName(), false, loader);
                 } catch (ClassNotFoundException e) {
                 }
+                //判断是否能被类加载器加载
                 if (interfaceClass != intf) {
                     throw new IllegalArgumentException(
                         intf + " is not visible from class loader");
@@ -584,6 +588,7 @@ public class Proxy implements java.io.Serializable {
                  * Verify that the Class object actually represents an
                  * interface.
                  */
+                //判断是否是一个接口
                 if (!interfaceClass.isInterface()) {
                     throw new IllegalArgumentException(
                         interfaceClass.getName() + " is not an interface");
@@ -591,6 +596,7 @@ public class Proxy implements java.io.Serializable {
                 /*
                  * Verify that this interface is not a duplicate.
                  */
+                //判断数组中是否存在该interface(注意此处用的是set)
                 if (interfaceSet.put(interfaceClass, Boolean.TRUE) != null) {
                     throw new IllegalArgumentException(
                         "repeated interface: " + interfaceClass.getName());
@@ -606,10 +612,14 @@ public class Proxy implements java.io.Serializable {
              * all non-public proxy interfaces are in the same package.
              */
             for (Class<?> intf : interfaces) {
+                //获得接口的访问标志
                 int flags = intf.getModifiers();
                 if (!Modifier.isPublic(flags)) {
+                    //生成代理类的访问标志设置问final
                     accessFlags = Modifier.FINAL;
+                    //获取类的全限定名称
                     String name = intf.getName();
+                    //获取包名
                     int n = name.lastIndexOf('.');
                     String pkg = ((n == -1) ? "" : name.substring(0, n + 1));
                     if (proxyPkg == null) {
@@ -629,7 +639,9 @@ public class Proxy implements java.io.Serializable {
             /*
              * Choose a name for the proxy class to generate.
              */
+            //代理类的序号
             long num = nextUniqueNumber.getAndIncrement();
+            //生成代理类
             String proxyName = proxyPkg + proxyClassNamePrefix + num;
 
             /*
@@ -704,8 +716,10 @@ public class Proxy implements java.io.Serializable {
                                           InvocationHandler h)
         throws IllegalArgumentException
     {
+        //传入的invocationHandler不能为空
         Objects.requireNonNull(h);
 
+        //安全管理器的获取及进行验证
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             checkProxyAccess(Reflection.getCallerClass(), loader, interfaces);
@@ -714,6 +728,7 @@ public class Proxy implements java.io.Serializable {
         /*
          * Look up or generate the designated proxy class.
          */
+        //该方法先从缓存获取,如果没有再生成一个代理类
         Class<?> cl = getProxyClass0(loader, interfaces);
 
         /*
@@ -724,8 +739,10 @@ public class Proxy implements java.io.Serializable {
                 checkNewProxyPermission(Reflection.getCallerClass(), cl);
             }
 
+            //获取参数是InvocationHandle.class的代理类构造器
             final Constructor<?> cons = cl.getConstructor(constructorParams);
             final InvocationHandler ih = h;
+            //如果代理类构造器不是可访问的,那么就是用特权将它设置为可访问的
             if (!Modifier.isPublic(cl.getModifiers())) {
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     public Void run() {

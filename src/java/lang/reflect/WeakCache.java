@@ -56,14 +56,19 @@ import java.util.function.Supplier;
  */
 final class WeakCache<K, P, V> {
 
+    //引用队列,F-Queue
     private final ReferenceQueue<K> refQueue
         = new ReferenceQueue<>();
     // the key type is Object for supporting null key
+    //key为一级缓存,map为二级缓存.为了支持null,key设置为Object
     private final ConcurrentMap<Object, ConcurrentMap<Object, Supplier<V>>> map
         = new ConcurrentHashMap<>();
+    //记录了代理类生成器是否可用,缓存的过期机制
     private final ConcurrentMap<Supplier<V>, Boolean> reverseMap
         = new ConcurrentHashMap<>();
+    //生成二级缓存的key
     private final BiFunction<K, P, ?> subKeyFactory;
+    //生成二级缓存的value
     private final BiFunction<K, P, V> valueFactory;
 
     /**
@@ -100,14 +105,17 @@ final class WeakCache<K, P, V> {
     public V get(K key, P parameter) {
         Objects.requireNonNull(parameter);
 
+        //清楚过期缓存
         expungeStaleEntries();
-
+        //将ClassLoader包装成CacheKey,作为一级缓存的key
         Object cacheKey = CacheKey.valueOf(key, refQueue);
 
         // lazily install the 2nd level valuesMap for the particular cacheKey
+        //获取到二级缓存
         ConcurrentMap<Object, Supplier<V>> valuesMap = map.get(cacheKey);
         if (valuesMap == null) {
-            ConcurrentMap<Object, Supplier<V>> oldValuesMap
+                //ConCurrentHashMap#putIfAbsent如果不存在则放入,存在则放入原有值
+                ConcurrentMap<Object, Supplier<V>> oldValuesMap
                 = map.putIfAbsent(cacheKey,
                                   valuesMap = new ConcurrentHashMap<>());
             if (oldValuesMap != null) {
