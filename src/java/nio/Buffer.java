@@ -171,7 +171,7 @@ import java.util.Spliterator;
  * @author JSR-51 Expert Group
  * @since 1.4
  */
-
+//Java NIO Buffer,一个数组(八大基本类型除了boolean)
 public abstract class Buffer {
 
     /**
@@ -182,9 +182,13 @@ public abstract class Buffer {
         Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.ORDERED;
 
     // Invariants: mark <= position <= limit <= capacity
+
     private int mark = -1;
+    //标志读写当前位置,从0开始,最大为capacity-1
     private int position = 0;
+    //标志数组的最大容量
     private int limit;
+    //初始化容量
     private int capacity;
 
     // Used only by direct buffers
@@ -213,6 +217,7 @@ public abstract class Buffer {
      *
      * @return  The capacity of this buffer
      */
+    //缓冲区的初始容量
     public final int capacity() {
         return capacity;
     }
@@ -284,6 +289,7 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    //编制读写buffer的当前位置
     public final Buffer mark() {
         mark = position;
         return this;
@@ -325,6 +331,7 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    //清空缓冲区
     public final Buffer clear() {
         position = 0;
         limit = capacity;
@@ -353,6 +360,7 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    //转换为读状态
     public final Buffer flip() {
         limit = position;
         position = 0;
@@ -375,6 +383,7 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    //重读buffer中的所有数据
     public final Buffer rewind() {
         position = 0;
         mark = -1;
@@ -483,6 +492,7 @@ public abstract class Buffer {
      *
      * @since 1.6
      */
+    //是否为堆外内存?
     public abstract boolean isDirect();
 
 

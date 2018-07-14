@@ -239,6 +239,7 @@ public abstract class Selector implements Closeable {
      *
      * @return  The provider that created this channel
      */
+    //Netty中Unsafe封装了该方法,Unsafe通过底层调用该方法新建一个Selector
     public abstract SelectorProvider provider();
 
     /**
