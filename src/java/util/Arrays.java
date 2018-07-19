@@ -66,6 +66,7 @@ import java.util.stream.StreamSupport;
  * @author John Rose
  * @since  1.2
  */
+//Array的工具类
 public class Arrays {
 
     /**
@@ -162,8 +163,10 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException
      *     if {@code fromIndex < 0} or {@code toIndex > a.length}
      */
+    //
     public static void sort(int[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
+        //双轴快排的实现
         DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
     }
 

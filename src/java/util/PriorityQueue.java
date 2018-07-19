@@ -79,6 +79,7 @@ import java.util.function.Consumer;
  * @author Josh Bloch, Doug Lea
  * @param <E> the type of elements held in this collection
  */
+//优先级队列,底层实现为堆排序
 public class PriorityQueue<E> extends AbstractQueue<E>
     implements java.io.Serializable {
 

@@ -77,6 +77,7 @@ import java.util.stream.StreamSupport;
  * @since   1.2
  */
 
+//集合的工具类
 public class Collections {
     // Suppresses default constructor, ensuring non-instantiability.
     private Collections() {

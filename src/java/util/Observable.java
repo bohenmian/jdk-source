@@ -59,6 +59,7 @@ package java.util;
  * @see     java.util.Observer#update(java.util.Observable, java.lang.Object)
  * @since   JDK1.0
  */
+//可被观察的,观察者模式中的subject.需要定义一个增加观察者的方法和notifyAll observer的方法
 public class Observable {
     private boolean changed = false;
     private Vector<Observer> obs;
@@ -78,6 +79,7 @@ public class Observable {
      * @param   o   an observer to be added.
      * @throws NullPointerException   if the parameter o is null.
      */
+    //增加观察者
     public synchronized void addObserver(Observer o) {
         if (o == null)
             throw new NullPointerException();
@@ -111,6 +113,7 @@ public class Observable {
      * @see     java.util.Observable#hasChanged()
      * @see     java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
+    //当subject的状态发生改变通知其他观察者
     public void notifyObservers() {
         notifyObservers(null);
     }

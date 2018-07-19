@@ -644,7 +644,7 @@ public abstract class AbstractQueuedSynchronizer
         // Try the fast path of enq; backup to full enq on failure
         //获取阻塞队列的尾节点
         Node pred = tail;
-        //如果尾节点不为null,那么将新建的节点设置为为节点
+        //如果尾节点不为null,那么将新建的节点设置为尾节点
         if (pred != null) {
             node.prev = pred;
             //CAS操作设置尾节点
