@@ -42,6 +42,7 @@ package java.io;
  * @see     java.io.PushbackInputStream
  * @since   JDK1.0
  */
+//输入流,输入的为字节.因为继承了Closeable,可以使用try-with-resources
 public abstract class InputStream implements Closeable {
 
     // MAX_SKIP_BUFFER_SIZE is used to determine the maximum buffer size to

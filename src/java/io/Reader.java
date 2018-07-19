@@ -48,6 +48,7 @@ package java.io;
  * @since       JDK1.1
  */
 
+//Reader文件操作的另外一种方式,读取的为字符
 public abstract class Reader implements Readable, Closeable {
 
     /**

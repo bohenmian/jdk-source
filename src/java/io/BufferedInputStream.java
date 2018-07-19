@@ -195,6 +195,7 @@ class BufferedInputStream extends FilterInputStream {
      * @param   size   the buffer size.
      * @exception IllegalArgumentException if {@code size <= 0}.
      */
+    //装饰器模式的体现,可以传入一个fileInputStream,然后给操作动态的增添了缓存的职责
     public BufferedInputStream(InputStream in, int size) {
         super(in);
         if (size <= 0) {

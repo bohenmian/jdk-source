@@ -272,6 +272,7 @@ public class File
      * @throws  NullPointerException
      *          If the <code>pathname</code> argument is <code>null</code>
      */
+    //根据path声明一个file
     public File(String pathname) {
         if (pathname == null) {
             throw new NullPointerException();
@@ -409,6 +410,7 @@ public class File
      * @see java.net.URI
      * @since 1.4
      */
+    //根据一个URI声明一个file,从这里可以看出文件的来源不仅仅只有本地文件
     public File(URI uri) {
 
         // Check our many preconditions
@@ -552,6 +554,7 @@ public class File
      *
      * @see     java.io.File#isAbsolute()
      */
+    //获得绝对路径
     public String getAbsolutePath() {
         return fs.resolve(this);
     }
@@ -785,6 +788,7 @@ public class File
      *          java.lang.SecurityManager#checkWrite(java.lang.String)}</code>
      *          method denies write access to the file
      */
+    //是否可写
     public boolean canWrite() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -808,6 +812,7 @@ public class File
      *          java.lang.SecurityManager#checkRead(java.lang.String)}</code>
      *          method denies read access to the file or directory
      */
+    //判断文件是否存在
     public boolean exists() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -838,6 +843,7 @@ public class File
      *          java.lang.SecurityManager#checkRead(java.lang.String)}</code>
      *          method denies read access to the file
      */
+    //是否为目录
     public boolean isDirectory() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -871,6 +877,7 @@ public class File
      *          java.lang.SecurityManager#checkRead(java.lang.String)}</code>
      *          method denies read access to the file
      */
+    //是否是文件
     public boolean isFile() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -1203,6 +1210,7 @@ public class File
      *
      * @since  1.2
      */
+    //列出目录下的所有文件
     public File[] listFiles() {
         String[] ss = list();
         if (ss == null) return null;
@@ -1305,6 +1313,7 @@ public class File
      *          java.lang.SecurityManager#checkWrite(java.lang.String)}</code>
      *          method does not permit the named directory to be created
      */
+    //创建单级目录
     public boolean mkdir() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -1336,6 +1345,7 @@ public class File
      *          method does not permit the named directory and all necessary
      *          parent directories to be created
      */
+    //创建多级目录s
     public boolean mkdirs() {
         if (exists()) {
             return false;
@@ -1382,6 +1392,7 @@ public class File
      * @throws  NullPointerException
      *          If parameter <code>dest</code> is <code>null</code>
      */
+    //重命名,入参为file的path
     public boolean renameTo(File dest) {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
