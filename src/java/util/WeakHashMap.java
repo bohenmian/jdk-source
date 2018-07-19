@@ -133,6 +133,7 @@ import java.util.function.Consumer;
  * @see         java.util.HashMap
  * @see         java.lang.ref.WeakReference
  */
+//WeakHashMap的键是WeakReference(相对于HashMap的键是强引用)
 public class WeakHashMap<K,V>
     extends AbstractMap<K,V>
     implements Map<K,V> {
@@ -140,6 +141,7 @@ public class WeakHashMap<K,V>
     /**
      * The default initial capacity -- MUST be a power of two.
      */
+    //默认初始化容量,和HashMap一致
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
@@ -147,11 +149,13 @@ public class WeakHashMap<K,V>
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<30.
      */
+    //最大容量
     private static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
      * The load factor used when none specified in constructor.
      */
+    //默认负载因子,和HashMap一致
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
@@ -162,6 +166,7 @@ public class WeakHashMap<K,V>
     /**
      * The number of key-value mappings contained in this weak hash map.
      */
+    //记录数组使用的size
     private int size;
 
     /**
@@ -177,6 +182,7 @@ public class WeakHashMap<K,V>
     /**
      * Reference queue for cleared WeakEntries
      */
+    //回收弱引用对象的队列
     private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
     /**
@@ -204,6 +210,7 @@ public class WeakHashMap<K,V>
      * @throws IllegalArgumentException if the initial capacity is negative,
      *         or if the load factor is nonpositive.
      */
+    //初始化构造函数,指定大小和初始化容量
     public WeakHashMap(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal Initial Capacity: "+
@@ -229,6 +236,7 @@ public class WeakHashMap<K,V>
      * @param  initialCapacity The initial capacity of the <tt>WeakHashMap</tt>
      * @throws IllegalArgumentException if the initial capacity is negative
      */
+    //指定初始化容量
     public WeakHashMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
@@ -237,6 +245,7 @@ public class WeakHashMap<K,V>
      * Constructs a new, empty <tt>WeakHashMap</tt> with the default initial
      * capacity (16) and load factor (0.75).
      */
+    //默认构造方法
     public WeakHashMap() {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
@@ -268,6 +277,7 @@ public class WeakHashMap<K,V>
     /**
      * Use NULL_KEY for key if it is null.
      */
+    //对null值做处理
     private static Object maskNull(Object key) {
         return (key == null) ? NULL_KEY : key;
     }
@@ -314,6 +324,7 @@ public class WeakHashMap<K,V>
     /**
      * Expunges stale entries from the table.
      */
+    //当table中的key不被引用而回收时(会被添加到ReferenceQueue中),遍历ReferenceQueue删除对应键值对
     private void expungeStaleEntries() {
         for (Object x; (x = queue.poll()) != null; ) {
             synchronized (queue) {
@@ -391,6 +402,7 @@ public class WeakHashMap<K,V>
      *
      * @see #put(Object, Object)
      */
+    //返回key的value
     public V get(Object key) {
         Object k = maskNull(key);
         int h = hash(k);
@@ -421,6 +433,7 @@ public class WeakHashMap<K,V>
      * Returns the entry associated with the specified key in this map.
      * Returns null if the map contains no mapping for this key.
      */
+    //根据key返回键值对
     Entry<K,V> getEntry(Object key) {
         Object k = maskNull(key);
         int h = hash(k);
@@ -444,6 +457,7 @@ public class WeakHashMap<K,V>
      *         (A <tt>null</tt> return can also indicate that the map
      *         previously associated <tt>null</tt> with <tt>key</tt>.)
      */
+    //put Entry to WeakHashMap
     public V put(K key, V value) {
         Object k = maskNull(key);
         int h = hash(k);
@@ -481,6 +495,7 @@ public class WeakHashMap<K,V>
      *        capacity is MAXIMUM_CAPACITY (in which case value
      *        is irrelevant).
      */
+    //扩容操作
     void resize(int newCapacity) {
         Entry<K,V>[] oldTable = getTable();
         int oldCapacity = oldTable.length;
@@ -699,6 +714,7 @@ public class WeakHashMap<K,V>
      * The entries in this hash table extend WeakReference, using its main ref
      * field as the key.
      */
+    //Entry的K是弱引用
     private static class Entry<K,V> extends WeakReference<Object> implements Map.Entry<K,V> {
         V value;
         final int hash;

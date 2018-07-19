@@ -341,7 +341,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     static final int hash(Object key) {
         int h;
-        //通过取key的hashCode并和低16为异或获得hash值
+        //通过取key的hashCode并和低16位异或获得hash值
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
 
@@ -388,7 +388,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      */
     //返回大于这个数的最小的2的幂次
     static final int tableSizeFor(int cap) {
-        int n = cap - 1;  //防止本来就是2的幂次在扩容
+        int n = cap - 1;  //防止本来就是2的幂次再扩容
         n |= n >>> 1;
         n |= n >>> 2;
         n |= n >>> 4;
