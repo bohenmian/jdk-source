@@ -401,15 +401,21 @@ public abstract class ClassLoader {
     protected Class<?> loadClass(String name, boolean resolve)
         throws ClassNotFoundException
     {
+        //必须加锁,避免两个类加载器同时加载
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
+            //首先判断需要加载的类是否已经被加载
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
                 try {
                     if (parent != null) {
+                        //双亲委派模型的体现,交给自己的父加载器判断是否能加载这个类,自下而上
+                        //如果需要自定义类加载器,建议覆盖findClass
+                        //如果想要打破双亲委派模型就需要重写loadClass,这里就如果自己的加载器不为null则可以加载
                         c = parent.loadClass(name, false);
                     } else {
+                        //父加载器为null的时候调用BootStrap Classloader
                         c = findBootstrapClassOrNull(name);
                     }
                 } catch (ClassNotFoundException e) {
@@ -421,6 +427,7 @@ public abstract class ClassLoader {
                     // If still not found, then invoke findClass in order
                     // to find the class.
                     long t1 = System.nanoTime();
+                    //父加载器没有找到则调用findClass,自上而下
                     c = findClass(name);
 
                     // this is the defining class loader; record the stats
@@ -456,6 +463,8 @@ public abstract class ClassLoader {
      *
      * @since  1.7
      */
+    //判断是否具有并行能力,如果不具有则直接返回一个ClassLoader实例
+    //如果具有并行能力,就需要返回一个锁对象
     protected Object getClassLoadingLock(String className) {
         Object lock = this;
         if (parallelLockMap != null) {
@@ -751,11 +760,13 @@ public abstract class ClassLoader {
      *          certificates than this class, or if <tt>name</tt> begins with
      *          "<tt>java.</tt>".
      */
+    //将class文件转换为Class
     protected final Class<?> defineClass(String name, byte[] b, int off, int len,
                                          ProtectionDomain protectionDomain)
         throws ClassFormatError
     {
         protectionDomain = preDefineClass(name, protectionDomain);
+        //查找Class文件所在的位置
         String source = defineClassSourceLocation(protectionDomain);
         Class<?> c = defineClass1(name, b, off, len, protectionDomain, source);
         postDefineClass(c, protectionDomain);
@@ -1012,6 +1023,7 @@ public abstract class ClassLoader {
         return findBootstrapClass(name);
     }
 
+    //返回BootstrapClass Loader(Native方法,底层是由C++实现的)
     // return null if not found
     private native Class<?> findBootstrapClass(String name);
 
