@@ -4,7 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class TestThreadPoolExecutor {
+public class ThreadPoolExecutorTest {
 
     public static void main(String[] args) throws InterruptedException {
         ThreadPoolExecutor executor =

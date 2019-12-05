@@ -245,8 +245,11 @@ public class ArrayList<E> extends AbstractList<E>
         //扩容1.5倍
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         //扩容后容量仍然不够,直接使用minCapacity
+        //这里使用newCapacity - minCapacity < 0而不是newCapacity < minCapacity是因为避免oldCapacity接近Integer.MAX_VALUE时,这时的容量应该为Integer.MAX_VALUE
+        //newCapacity为负数,如果newCapacity < minCapacity则会使新的容量为minCapacity,因此这里newCapacity - minCapacity < 0是为了使newCapacity - minCapacity溢出不执行该if
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
+        // 这里处理oldCapacity + (oldCapacity >> 1)溢出的情况
         if (newCapacity - MAX_ARRAY_SIZE > 0)
             newCapacity = hugeCapacity(minCapacity);
         // minCapacity is usually close to size, so this is a win:

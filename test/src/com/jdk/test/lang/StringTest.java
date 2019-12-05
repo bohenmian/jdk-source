@@ -1,6 +1,6 @@
 package src.com.jdk.test.lang;
 
-public class TestString {
+public class StringTest {
 
     public static void main(String[] args) {
         //此处s1是直接使用的赋值操作,当编译器编译的时候,先检查class文件中是否包含该字符串常量,如果包含,则直接返回常量池中对象的引用,没有则在常量池新建对象

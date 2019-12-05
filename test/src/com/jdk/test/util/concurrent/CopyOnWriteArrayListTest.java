@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class TestCopyOnWriteArrayList {
+public class CopyOnWriteArrayListTest {
 
     public static void main(String[] args) {
         List<Integer> synchronizedList = Collections.synchronizedList(new ArrayList<>());

@@ -1,6 +1,6 @@
 package src.com.jdk.test.lang;
 
-public class TestThreadLocal {
+public class ThreadLocalTest {
 
     ThreadLocal<Long> longThreadLocal = new ThreadLocal<>();
     ThreadLocal<String> stringThreadLocal = new ThreadLocal<>();
@@ -20,21 +20,21 @@ public class TestThreadLocal {
 
 
     public static void main(String[] args) throws InterruptedException {
-        TestThreadLocal testThreadLocal = new TestThreadLocal();
+        ThreadLocalTest threadLocalTest = new ThreadLocalTest();
 
         //主线程
-        testThreadLocal.set();
+        threadLocalTest.set();
 
-        System.out.println(testThreadLocal.getLong());
-        System.out.println(testThreadLocal.getString());
+        System.out.println(threadLocalTest.getLong());
+        System.out.println(threadLocalTest.getString());
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 //其他的Thread再次set
-                testThreadLocal.set();
-                System.out.println(testThreadLocal.getLong());
-                System.out.println(testThreadLocal.getString());
+                threadLocalTest.set();
+                System.out.println(threadLocalTest.getLong());
+                System.out.println(threadLocalTest.getString());
             }
         });
         thread.start();
@@ -42,8 +42,8 @@ public class TestThreadLocal {
 
         //根据打印结果我们看到ThreadLocal确实是对线程进行绑定的,是因为ThreadLocal中的ThreadLocalMap是以线程为K,值的副本为V的数据结构
         //同时因为K的数据类型为WeakReference,需要注意内存泄露的情况发生
-        System.out.println(testThreadLocal.getLong());
-        System.out.println(testThreadLocal.getString());
+        System.out.println(threadLocalTest.getLong());
+        System.out.println(threadLocalTest.getString());
 
     }
 }

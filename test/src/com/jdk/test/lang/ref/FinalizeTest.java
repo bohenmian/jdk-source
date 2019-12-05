@@ -5,26 +5,26 @@ package src.com.jdk.test.lang.ref;
  *如果重写了finalize方法并且该对象没有执行过finalize方法,那么代表它是有必要的
  *2.如果是有必要执行finalize方法,那么就把该对象加入一个F-Queue队列中,在对列中如果有对象引用,那么就可以不判定为死亡,如果没有引用,那么就判定为真正的死亡
  */
-public class TestFinalize {
+public class FinalizeTest {
 
-    public static TestFinalize testFinalize;
+    public static FinalizeTest finalizeTest;
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
         System.out.println("嗯，已经执行了finalize()方法了");
-        TestFinalize.testFinalize = this;   //用this来指向testFinalize,避免testFinalize的引用为空
+        FinalizeTest.finalizeTest = this;   //用this来指向testFinalize,避免testFinalize的引用为空
     }
 
     private static void save() throws InterruptedException {
 
-        testFinalize = null; //将testFinalize的引用置为null,代表没有对象引用,help GC
+        finalizeTest = null; //将testFinalize的引用置为null,代表没有对象引用,help GC
         System.gc();  //通知系统通知需要GC
 
 
         Thread.sleep(500);//加入F-Queue队列中的Finalizer线程优先级比较低
 
-        if (testFinalize != null) {
+        if (finalizeTest != null) {
             System.out.println("我还活着~你咬我啊~");
 
         } else {
@@ -33,7 +33,7 @@ public class TestFinalize {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        testFinalize = new TestFinalize();
+        finalizeTest = new FinalizeTest();
         //执行save方法后发现执行了System.gc()但是对象并没有回收,是因为在重写的finalize方法中通过this将自己的引用赋给自己
         //同时也发现执行了finalize方法只执行了一次
         save();

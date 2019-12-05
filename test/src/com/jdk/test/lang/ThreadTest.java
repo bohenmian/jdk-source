@@ -2,7 +2,7 @@ package src.com.jdk.test.lang;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TestThread {
+public class ThreadTest {
 
     //两个线程交替执行
     private static void demo() {

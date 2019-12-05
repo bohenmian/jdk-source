@@ -8,7 +8,7 @@ package src.com.jdk.test.util.concurrent;
 
 import java.util.concurrent.*;
 
-public class TestCallable {
+public class CallableTest {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(1);

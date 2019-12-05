@@ -3,7 +3,7 @@ package src.com.jdk.test.util.concurrent;
 import java.util.concurrent.CountDownLatch;
 
 //适用于一个线程等待其他线程执行完毕才执行
-public class TestCountDownLatch {
+public class CountDownLatchTest {
 
     public static void main(String[] args) {
 

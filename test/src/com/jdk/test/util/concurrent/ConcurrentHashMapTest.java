@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TestConcurrentHashMap {
+public class ConcurrentHashMapTest {
 
     private static ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
 

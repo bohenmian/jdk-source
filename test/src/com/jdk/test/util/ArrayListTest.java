@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public class TestArrayList {
+public class ArrayListTest {
 
     private final static int THREADCOUNT = 1000;
 

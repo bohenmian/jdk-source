@@ -5,7 +5,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 //使用场景: 适用于当所有线程都到达时再一起执行下面程序的场景
-public class TestCyclicBarrier {
+public class CyclicBarrierTest {
 
     public static void main(String[] args) {
         int threadNum = 3;

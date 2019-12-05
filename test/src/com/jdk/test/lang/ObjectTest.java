@@ -3,14 +3,13 @@ package src.com.jdk.test.lang;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 
-public class TestObject {
+public class ObjectTest {
 
     private int x;
     private int y;
 
-    public TestObject(int x, int y) {
+    public ObjectTest(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -20,7 +19,7 @@ public class TestObject {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TestObject that = (TestObject) o;
+        ObjectTest that = (ObjectTest) o;
         return x == that.x &&
                 y == that.y;
     }
@@ -35,8 +34,8 @@ public class TestObject {
 
     public static void main(String[] args) {
         Collection set = new HashSet();
-        TestObject test1 = new TestObject(1, 1);
-        TestObject test2 = new TestObject(1, 1);
+        ObjectTest test1 = new ObjectTest(1, 1);
+        ObjectTest test2 = new ObjectTest(1, 1);
         //此处test1.equals()返回true,所以test1和test2应该是同一个对象
         System.out.println(test1.equals(test2));
         //HashSet为空,直接将test1加入set

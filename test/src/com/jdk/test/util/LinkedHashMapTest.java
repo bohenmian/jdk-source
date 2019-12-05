@@ -3,16 +3,16 @@ package src.com.jdk.test.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class TestLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
+public class LinkedHashMapTest<K, V> extends LinkedHashMap<K, V> {
 
     private final int SIZE;
 
-    public TestLinkedHashMap(int size) {
+    public LinkedHashMapTest(int size) {
         super(); //调用无参构造方法,不启用LRU规则
         this.SIZE = size;
     }
 
-    public TestLinkedHashMap(int size, float loadFactor, boolean accessOrder) {
+    public LinkedHashMapTest(int size, float loadFactor, boolean accessOrder) {
         //调用含参构造方法,其中accessOrder必须设置为true才能实现LRU算法
         super(size, loadFactor, accessOrder);
         this.SIZE = size;
@@ -25,7 +25,7 @@ public class TestLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
     public static void main(String[] args) {
         //LinkedHashMap实现FIFO
-        TestLinkedHashMap<Integer, Integer> map = new TestLinkedHashMap<>(10);
+        LinkedHashMapTest<Integer, Integer> map = new LinkedHashMapTest<>(10);
         for (int i = 0; i++ < 10; ) {
             map.put(i, i);
         }
@@ -39,7 +39,7 @@ public class TestLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
         //LinkedHashMap实现LRU算法
 
-        TestLinkedHashMap<Integer, Integer> linkedHashMap = new TestLinkedHashMap<>(10, 0.75f, true);
+        LinkedHashMapTest<Integer, Integer> linkedHashMap = new LinkedHashMapTest<>(10, 0.75f, true);
         for (int i = 0; i++ < 10; ) {
             linkedHashMap.put(i, i);
         }

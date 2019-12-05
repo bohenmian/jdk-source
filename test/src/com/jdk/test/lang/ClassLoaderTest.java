@@ -3,12 +3,12 @@ package src.com.jdk.test.lang;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TestClassLoader {
+public class ClassLoaderTest {
 
     public static void main(String[] args) throws ClassNotFoundException {
 
         //获取TestClassLoader的类加载器
-        ClassLoader classLoader = TestClassLoader.class.getClassLoader();
+        ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();
 
         //打印出来TestClassLoader的类加载器
         System.out.println("ClassLoader is " + classLoader.toString());
@@ -42,9 +42,9 @@ public class TestClassLoader {
         };
         //此处我们得到结论针对于同一个类运用不同的构造器加载也会置于不同的命名空间
         //所以要唯一确定一个类需要类和类加载器共同确定
-        Object obj = myClassLoader.loadClass("src.com.jdk.test.lang.TestClassLoader");
+        Object obj = myClassLoader.loadClass("src.com.jdk.test.lang.ClassLoaderTest");
         System.out.println(obj.getClass());
-        System.out.println(obj instanceof src.com.jdk.test.lang.TestClassLoader);
+        System.out.println(obj instanceof ClassLoaderTest);
 
     }
 

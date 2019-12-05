@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
  * @see java.util.concurrent.CompletableFuture
  */
 
-public class TestCompletableFuture {
+public class CompletableFutureTest {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         CompletableFuture<String> completableFuture = new CompletableFuture<>();

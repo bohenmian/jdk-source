@@ -6,7 +6,7 @@ package src.com.jdk.test.lang;
  * 多线程模型:   JDK1.0
  */
 
-public class TestRunnable {
+public class RunnableTest {
 
     public static void main(String[] args) {
         Thread thread = new Thread(new Runnable() {

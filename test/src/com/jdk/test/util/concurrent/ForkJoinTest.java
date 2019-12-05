@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @see java.util.concurrent.ForkJoinPool
  */
 
-public class TestForkJoin {
+public class ForkJoinTest {
 
     public static void main(String[] args) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();

@@ -2,7 +2,7 @@ package src.com.jdk.test.util;
 
 import java.util.HashMap;
 
-public class TestHashMap {
+public class HashMapTest {
 
     private static HashMap<Integer, Integer> map = new HashMap<>();
 
